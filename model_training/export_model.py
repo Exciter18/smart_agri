@@ -1,4 +1,6 @@
 import warnings
+from pathlib import Path
+
 import joblib
 import numpy as np
 from sklearn.calibration import CalibratedClassifierCV
@@ -7,11 +9,12 @@ from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 
-from dataset_splits import grouped_split_indices, load_grouped_feature_rows
+from .dataset_splits import grouped_split_indices, load_grouped_feature_rows
 
 
 SVM_MAX_ITER = 20000
 SVM_TOL = 1e-3
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def fit_linear_svc(X_train, y_train):
@@ -85,10 +88,10 @@ def fit_and_export_model(
     model = build_calibrated_model(
         X_train, y_train, groups_train, feature_indices
     )
-    joblib.dump(scaler, 'scaler.pkl')
-    joblib.dump(np.asarray(classes), 'classes.pkl')
-    np.save('best_features.npy', feature_indices)
-    joblib.dump(model, 'svm_model.pkl')
+    joblib.dump(scaler, PROJECT_ROOT / "scaler.pkl")
+    joblib.dump(np.asarray(classes), PROJECT_ROOT / "classes.pkl")
+    np.save(PROJECT_ROOT / "best_features.npy", feature_indices)
+    joblib.dump(model, PROJECT_ROOT / "svm_model.pkl")
     return model
 
 
@@ -99,7 +102,7 @@ def main():
     class_to_idx = {label: index for index, label in enumerate(classes)}
     y_train = np.asarray([class_to_idx[label] for label in labels[train_indices]])
 
-    feature_indices = np.load("best_features.npy")
+    feature_indices = np.load(PROJECT_ROOT / "best_features.npy")
     if (
         feature_indices.size == 0
         or np.any(feature_indices < 0)

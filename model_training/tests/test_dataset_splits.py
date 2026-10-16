@@ -2,8 +2,8 @@ import unittest
 
 import numpy as np
 
-from dataset_splits import grouped_split_indices, source_group
-from prepare_data import parse_annotation
+from model_training.dataset_splits import grouped_split_indices, source_group
+from model_training.prepare_data import parse_annotation
 
 
 class GroupedSplitTests(unittest.TestCase):

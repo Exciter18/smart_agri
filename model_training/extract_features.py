@@ -7,10 +7,13 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import torch.nn as nn
 
-TRAIN_DIR = r'classification_dataset\train'
-VAL_DIR = r'classification_dataset\val'
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TRAIN_DIR = PROJECT_ROOT / "classification_dataset" / "train"
+VAL_DIR = PROJECT_ROOT / "classification_dataset" / "val"
 
-def get_feature_extractor(num_classes, model_path='fine_tuned_resnet.pth', device='cpu'):
+def get_feature_extractor(
+    num_classes, model_path=PROJECT_ROOT / "fine_tuned_resnet.pth", device="cpu"
+):
     model = models.resnet50(weights=None)
     num_ftrs = model.fc.in_features
     model.fc = nn.Linear(num_ftrs, num_classes)
@@ -43,13 +46,13 @@ def extract_features(data_loader, model, device):
 def save_feature_data(split, features, labels, image_paths):
     feature_frame = pd.DataFrame(features)
     feature_frame['Target'] = labels
-    feature_frame.to_csv(f'{split}_features.csv', index=False)
+    feature_frame.to_csv(PROJECT_ROOT / f"{split}_features.csv", index=False)
 
     manifest = pd.DataFrame({
         'ImagePath': [Path(path).as_posix() for path in image_paths],
         'Target': labels,
     })
-    manifest.to_csv(f'{split}_manifest.csv', index=False)
+    manifest.to_csv(PROJECT_ROOT / f"{split}_manifest.csv", index=False)
 
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -71,7 +74,9 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
     
     print("Nap mo hinh ResNet50 da Fine-tune...")
-    model = get_feature_extractor(num_classes, 'fine_tuned_resnet.pth', device).to(device)
+    model = get_feature_extractor(
+        num_classes, PROJECT_ROOT / "fine_tuned_resnet.pth", device
+    ).to(device)
     
     print("Dang trich xuat dac trung tap Train...")
     train_features, train_labels, train_paths = extract_features(

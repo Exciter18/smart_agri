@@ -7,10 +7,17 @@ import seaborn as sns
 from sklearn.linear_model import RidgeClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report
 from sklearn.preprocessing import StandardScaler
-from optimizers import BinaryPSO, BinaryGA, BinaryGWO, BinaryWOA, BinarySCA
-from dataset_splits import grouped_split_indices, load_grouped_feature_rows
-from export_model import SVM_MAX_ITER, SVM_TOL, fit_and_export_model, fit_linear_svc
+from .optimizers import BinaryPSO, BinaryGA, BinaryGWO, BinaryWOA, BinarySCA
+from .dataset_splits import grouped_split_indices, load_grouped_feature_rows
+from .export_model import (
+    SVM_MAX_ITER,
+    SVM_TOL,
+    fit_and_export_model,
+    fit_linear_svc,
+)
 import time
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def load_and_scale_data():
@@ -130,7 +137,7 @@ def generate_charts(df_results, curves, cm, y_test, best_preds, classes, best_mo
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('report_results/1_Convergence_Curve.png', dpi=300)
+    plt.savefig(os.path.join(PROJECT_ROOT, 'model_training', 'report_results', '1_Convergence_Curve.png'), dpi=300)
     
     # 2. Ma tran nham lan (Confusion Matrix)
     plt.figure(figsize=(10, 8))
@@ -140,7 +147,7 @@ def generate_charts(df_results, curves, cm, y_test, best_preds, classes, best_mo
     plt.ylabel('True Label')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    plt.savefig('report_results/2_Confusion_Matrix.png', dpi=300)
+    plt.savefig(os.path.join(PROJECT_ROOT, 'model_training', 'report_results', '2_Confusion_Matrix.png'), dpi=300)
     
     # 3. So sanh hieu suat Accuracy va F1-Score
     df_metrics = df_results.melt(id_vars='Model', value_vars=['Accuracy', 'F1-Score'], var_name='Metric', value_name='Score')
@@ -151,7 +158,7 @@ def generate_charts(df_results, curves, cm, y_test, best_preds, classes, best_mo
     plt.ylabel('Score')
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.savefig('report_results/3_Performance_Comparison.png', dpi=300)
+    plt.savefig(os.path.join(PROJECT_ROOT, 'model_training', 'report_results', '3_Performance_Comparison.png'), dpi=300)
     
     # 4. So sanh so luong dac trung duoc giu lai
     plt.figure(figsize=(10, 6))
@@ -165,7 +172,7 @@ def generate_charts(df_results, curves, cm, y_test, best_preds, classes, best_mo
                     textcoords='offset points')
                     
     plt.tight_layout()
-    plt.savefig('report_results/4_Feature_Reduction.png', dpi=300)
+    plt.savefig(os.path.join(PROJECT_ROOT, 'model_training', 'report_results', '4_Feature_Reduction.png'), dpi=300)
     
     # 5. Ban do nhiet chi so chi tiet (Classification Report)
     report_dict = classification_report(
@@ -176,18 +183,22 @@ def generate_charts(df_results, curves, cm, y_test, best_preds, classes, best_mo
         output_dict=True,
         zero_division=0,
     )
-    pd.DataFrame(report_dict).transpose().to_csv('report_results/test_metrics.csv')
+    pd.DataFrame(report_dict).transpose().to_csv(
+        os.path.join(
+            PROJECT_ROOT, 'model_training', 'report_results', 'test_metrics.csv'
+        )
+    )
     report_df = pd.DataFrame(report_dict).iloc[:len(classes), :3]
     
     plt.figure(figsize=(10, 6))
     sns.heatmap(report_df, annot=True, cmap='YlGnBu', vmin=0.0, vmax=1.0, fmt='.3f')
     plt.title(f'Held-out Test Metrics per Class ({best_model_name})')
     plt.tight_layout()
-    plt.savefig('report_results/5_Classification_Report_Heatmap.png', dpi=300)
+    plt.savefig(os.path.join(PROJECT_ROOT, 'model_training', 'report_results', '5_Classification_Report_Heatmap.png'), dpi=300)
 
 def main():
     np.random.seed(42)
-    os.makedirs('report_results', exist_ok=True)
+    os.makedirs(os.path.join(PROJECT_ROOT, 'model_training', 'report_results'), exist_ok=True)
     (
         X_train, y_train, X_val, y_val, X_test, y_test,
         groups_train, classes, scaler
@@ -229,7 +240,7 @@ def main():
         'Time (s)': round(base_time, 2)
     })
     pd.DataFrame(results_summary).to_csv(
-        'report_results/Algorithm_Comparison.csv', index=False
+        os.path.join(PROJECT_ROOT, 'model_training', 'report_results', 'Algorithm_Comparison.csv'), index=False
     )
     
     pop_size = 10
@@ -252,7 +263,7 @@ def main():
         results_summary.append(res_dict)
         curves[name] = curve
         pd.DataFrame(results_summary).to_csv(
-            'report_results/Algorithm_Comparison.csv', index=False
+            os.path.join(PROJECT_ROOT, 'model_training', 'report_results', 'Algorithm_Comparison.csv'), index=False
         )
         
         if macro_f1 > best_optimizer_macro_f1:
@@ -262,13 +273,13 @@ def main():
             best_model_name = f"{name}-SVM"
 
     df_results = pd.DataFrame(results_summary)
-    df_results.to_csv('report_results/Algorithm_Comparison.csv', index=False)
+    df_results.to_csv(os.path.join(PROJECT_ROOT, 'model_training', 'report_results', 'Algorithm_Comparison.csv'), index=False)
     
     print(df_results.to_string(index=False))
 
     if best_features is None or best_test_preds is None:
         raise RuntimeError("No feature-optimized model was produced.")
-    np.save('best_features.npy', best_features)
+    np.save(os.path.join(PROJECT_ROOT, 'best_features.npy'), best_features)
 
     test_models = [
         ("Baseline SVM", baseline_test_preds),
@@ -287,7 +298,7 @@ def main():
             ),
         })
     pd.DataFrame(test_summaries).to_csv(
-        'report_results/held_out_test_summary.csv', index=False
+        os.path.join(PROJECT_ROOT, 'model_training', 'report_results', 'held_out_test_summary.csv'), index=False
     )
 
     best_test_report = classification_report(
@@ -299,7 +310,7 @@ def main():
         zero_division=0,
     )
     pd.DataFrame(best_test_report).transpose().to_csv(
-        'report_results/test_metrics.csv'
+        os.path.join(PROJECT_ROOT, 'model_training', 'report_results', 'test_metrics.csv')
     )
     baseline_test_report = classification_report(
         y_test,
@@ -310,7 +321,7 @@ def main():
         zero_division=0,
     )
     pd.DataFrame(baseline_test_report).transpose().to_csv(
-        'report_results/baseline_test_metrics.csv'
+        os.path.join(PROJECT_ROOT, 'model_training', 'report_results', 'baseline_test_metrics.csv')
     )
 
     print("\nHeld-out test comparison (same split and converged LinearSVC):")

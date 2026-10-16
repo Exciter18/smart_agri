@@ -4,9 +4,11 @@ import torch.optim as optim
 from torchvision import models, transforms, datasets
 from torch.utils.data import DataLoader
 import copy
+from pathlib import Path
 
-TRAIN_DIR = r'classification_dataset\train'
-VAL_DIR = r'classification_dataset\val'
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TRAIN_DIR = PROJECT_ROOT / "classification_dataset" / "train"
+VAL_DIR = PROJECT_ROOT / "classification_dataset" / "val"
 
 NUM_EPOCHS = 10
 BATCH_SIZE = 32
@@ -94,7 +96,7 @@ def main():
     print(f"\nHuan luyen hoan tat. Best val Acc: {best_acc:.4f}")
     
     model.load_state_dict(best_model_wts)
-    torch.save(model.state_dict(), 'fine_tuned_resnet.pth')
+    torch.save(model.state_dict(), PROJECT_ROOT / 'fine_tuned_resnet.pth')
     print("Da luu model tai fine_tuned_resnet.pth")
 
 if __name__ == '__main__':

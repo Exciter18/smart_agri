@@ -2,7 +2,11 @@ import unittest
 
 import numpy as np
 
-from export_model import SVM_MAX_ITER, fit_linear_svc, build_calibrated_model
+from model_training.export_model import (
+    SVM_MAX_ITER,
+    fit_linear_svc,
+    build_calibrated_model,
+)
 
 
 class CalibratedModelTests(unittest.TestCase):

@@ -1,4 +1,6 @@
 import io
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 import joblib
@@ -10,10 +12,11 @@ from PIL import Image
 
 app = FastAPI(title="Smart Agriculture Vision API")
 
-scaler = joblib.load('scaler.pkl')
-classes = joblib.load('classes.pkl')
-best_features = np.load('best_features.npy')
-svm_model = joblib.load('svm_model.pkl')
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+scaler = joblib.load(PROJECT_ROOT / 'scaler.pkl')
+classes = joblib.load(PROJECT_ROOT / 'classes.pkl')
+best_features = np.load(PROJECT_ROOT / 'best_features.npy')
+svm_model = joblib.load(PROJECT_ROOT / 'svm_model.pkl')
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -22,7 +25,9 @@ backbone = models.resnet50(weights=None)
 num_ftrs = backbone.fc.in_features
 backbone.fc = nn.Linear(num_ftrs, num_classes)
 
-backbone.load_state_dict(torch.load('fine_tuned_resnet.pth', map_location=device))
+backbone.load_state_dict(
+    torch.load(PROJECT_ROOT / 'fine_tuned_resnet.pth', map_location=device)
+)
 
 backbone = torch.nn.Sequential(*(list(backbone.children())[:-1]))
 backbone.eval().to(device)

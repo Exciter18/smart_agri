@@ -141,8 +141,9 @@ def process_yolo_to_classification(base_dir, output_dir, allow_existing=False):
                     raise OSError(f"Could not write crop: {save_path}")
 
 if __name__ == '__main__':
-    BASE_DIR = 'rice'
-    OUTPUT_DIR = 'classification_dataset'
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
+    BASE_DIR = PROJECT_ROOT / 'rice'
+    OUTPUT_DIR = PROJECT_ROOT / 'classification_dataset'
     
     process_yolo_to_classification(BASE_DIR, OUTPUT_DIR)
     print("Da cat va phan loai anh xong!")

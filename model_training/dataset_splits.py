@@ -7,7 +7,8 @@ from sklearn.model_selection import StratifiedGroupKFold
 from torchvision.datasets import ImageFolder
 
 
-DATASET_ROOT = Path("classification_dataset")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATASET_ROOT = PROJECT_ROOT / "classification_dataset"
 
 
 def source_group(image_path):
@@ -25,13 +26,13 @@ def load_grouped_feature_rows():
 
     for split in ("train", "val"):
         image_folder = ImageFolder(str(DATASET_ROOT / split))
-        manifest_path = Path(f"{split}_manifest.csv")
+        manifest_path = PROJECT_ROOT / f"{split}_manifest.csv"
         if not manifest_path.is_file():
             raise FileNotFoundError(
                 f"{manifest_path} is missing. Run extract_features.py to rebuild "
                 "the feature cache with its image manifest."
             )
-        feature_frame = pd.read_csv(f"{split}_features.csv")
+        feature_frame = pd.read_csv(PROJECT_ROOT / f"{split}_features.csv")
         manifest = pd.read_csv(manifest_path)
 
         if "Target" not in feature_frame:
