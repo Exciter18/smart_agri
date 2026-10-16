@@ -26,3 +26,13 @@ fine_tuned_resnet.pth
 .idea/
 .DS_Store
 Thumbs.db
+
+# Flutter and Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+coverage/
+android/.gradle/
+android/local.properties
