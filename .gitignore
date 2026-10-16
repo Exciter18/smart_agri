@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.env
+
+# Local datasets and generated feature caches
+classification_dataset/
+rice/
+train_features.csv
+val_features.csv
+train_manifest.csv
+val_manifest.csv
+
+# Generated model artifacts
+best_features.npy
+classes.pkl
+scaler.pkl
+svm_model.pkl
+fine_tuned_resnet.pth
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
