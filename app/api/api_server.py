@@ -9,8 +9,16 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from torchvision import models, transforms
 from PIL import Image
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Smart Agriculture Vision API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 scaler = joblib.load(PROJECT_ROOT / 'scaler.pkl')
