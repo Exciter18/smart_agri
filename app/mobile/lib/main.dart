@@ -65,7 +65,7 @@ class _VisionScreenState extends State<VisionScreen> {
 
     try {
       var uri = Uri.parse(
-        "https://30d4-2405-4802-9073-e060-597c-ea2-4f74-3974.ngrok-free.app/predict",
+        "https://jamison-noncollusive-tomasa.ngrok-free.dev/predict",
       );
       var request = http.MultipartRequest('POST', uri);
       request.headers['ngrok-skip-browser-warning'] = 'true';
@@ -90,8 +90,8 @@ class _VisionScreenState extends State<VisionScreen> {
         var result = json.decode(responseData);
 
         setState(() {
-          _predictionResult =
-              "Bệnh: ${result['disease']}\nĐộ chính xác: ${result['confidence']}%\nMức độ: ${result['severity']}";
+          _predictionResult = _predictionResult =
+              "Disease: ${result['disease']}\nConfidence: ${result['confidence']}%\nSeverity: ${result['severity']}";
         });
       } else {
         setState(() {

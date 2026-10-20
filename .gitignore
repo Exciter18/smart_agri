@@ -14,12 +14,7 @@ val_features.csv
 train_manifest.csv
 val_manifest.csv
 
-# Generated model artifacts
-best_features.npy
-classes.pkl
-scaler.pkl
-svm_model.pkl
-fine_tuned_resnet.pth
+# Exported deployment model artifacts are intentionally tracked.
 
 # Editor and OS files
 .vscode/

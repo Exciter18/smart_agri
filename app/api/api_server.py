@@ -1,4 +1,5 @@
 import io
+import re
 from pathlib import Path
 
 import torch
@@ -6,18 +7,19 @@ import torch.nn as nn
 import joblib
 import numpy as np
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware 
 from fastapi.responses import JSONResponse
 from torchvision import models, transforms
 from PIL import Image
-from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Smart Agriculture Vision API")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"], 
-    allow_headers=["*"],
+    allow_headers=["*"], 
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -46,17 +48,17 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
-def center_crop(image, crop_ratio=0.5):
+def square_padding(image): 
     width, height = image.size
-    new_width = int(width * crop_ratio)
-    new_height = int(height * crop_ratio)
+    max_dim = max(width, height)
     
-    left = (width - new_width) / 2
-    top = (height - new_height) / 2
-    right = (width + new_width) / 2
-    bottom = (height + new_height) / 2
+    new_img = Image.new("RGB", (max_dim, max_dim), (0, 0, 0))
     
-    return image.crop((left, top, right, bottom))
+    left = (max_dim - width) // 2
+    top = (max_dim - height) // 2
+    
+    new_img.paste(image, (left, top))
+    return new_img
 
 @app.post("/predict")
 async def predict_disease(file: UploadFile = File(...)):
@@ -64,9 +66,9 @@ async def predict_disease(file: UploadFile = File(...)):
         image_data = await file.read()
         image = Image.open(io.BytesIO(image_data)).convert("RGB")
         
-        cropped_img = center_crop(image, crop_ratio=0.5)
+        padded_img = square_padding(image)
+        img_tensor = transform(padded_img).unsqueeze(0).to(device)
         
-        img_tensor = transform(cropped_img).unsqueeze(0).to(device)
         with torch.no_grad():
             features = backbone(img_tensor).view(1, -1).cpu().numpy()
             
@@ -79,8 +81,14 @@ async def predict_disease(file: UploadFile = File(...)):
         probabilities = svm_model.predict_proba(features_optimized)[0]
         confidence = float(np.max(probabilities) * 100)
         
-        severity = "Nghiêm trọng" if confidence > 80 else "Mới chớm"
-        display_name = disease_name.replace("Rice__", "").replace("_", " ")
+        clean_name = disease_name.replace("Rice__", "").replace("_", " ")
+        display_name = re.sub(r"([a-z])([A-Z])", r"\g<1> \g<2>", clean_name)
+        
+        if confidence < 50:
+            display_name = "Unrecognized"
+            severity = "Please retake image"
+        else:
+            severity = "Severe" if confidence > 80 else "Early stage"
         
         return JSONResponse(content={
             "disease": display_name,
