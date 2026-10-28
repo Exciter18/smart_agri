@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -27,7 +28,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(PROJECT_ROOT / ".env", override=False)
 WEB_INDEX = PROJECT_ROOT / "app" / "api" / "web" / "index.html"
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+MAX_IMAGE_PIXELS = 25_000_000
 MODEL_VERSION = "resnet50-svm-v1"
+logger = logging.getLogger(__name__)
 ARTIFACT_FILES = {
     "resnet": "fine_tuned_resnet.pth",
     "svm": "svm_model.pkl",
@@ -264,8 +267,6 @@ def agent_model_info() -> dict[str, Any]:
 
 @app.post("/predict")
 async def predict_disease(file: UploadFile = File(...)) -> dict[str, Any]:
-    if file.content_type and not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=415, detail="Tệp gửi lên không phải ảnh")
     image_data = await file.read(MAX_UPLOAD_BYTES + 1)
     if not image_data:
         raise HTTPException(status_code=400, detail="Tệp ảnh rỗng")
@@ -273,9 +274,24 @@ async def predict_disease(file: UploadFile = File(...)) -> dict[str, Any]:
         raise HTTPException(status_code=413, detail="Ảnh vượt quá giới hạn 10 MB")
 
     try:
-        image = Image.open(io.BytesIO(image_data)).convert("RGB")
-        image.load()
-    except (UnidentifiedImageError, OSError, ValueError) as exc:
+        with Image.open(io.BytesIO(image_data)) as uploaded_image:
+            if uploaded_image.width * uploaded_image.height > MAX_IMAGE_PIXELS:
+                raise HTTPException(
+                    status_code=413,
+                    detail="Kích thước ảnh vượt quá giới hạn hỗ trợ.",
+                )
+            uploaded_image.verify()
+        with Image.open(io.BytesIO(image_data)) as uploaded_image:
+            image = uploaded_image.convert("RGB")
+            image.load()
+    except HTTPException:
+        raise
+    except (
+        Image.DecompressionBombError,
+        UnidentifiedImageError,
+        OSError,
+        ValueError,
+    ) as exc:
         raise HTTPException(
             status_code=400, detail="Không đọc được nội dung ảnh"
         ) from exc
@@ -286,8 +302,10 @@ async def predict_disease(file: UploadFile = File(...)) -> dict[str, Any]:
     except RuntimeError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except Exception as exc:
+        logger.exception("Rice vision model failed to process an image")
         raise HTTPException(
-            status_code=500, detail=f"Model không thể xử lý ảnh: {exc}"
+            status_code=500,
+            detail="Model không thể xử lý ảnh. Vui lòng thử lại sau.",
         ) from exc
 
     if not top_predictions:

@@ -267,76 +267,7 @@ class PredictionCard extends StatelessWidget {
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 18),
-            const Divider(color: Color(0xFFD3E2D2)),
-            const SizedBox(height: 14),
-            Row(
-              children: [
-                const IconTile(icon: Icons.healing_outlined, size: 42),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'NEXT STEP',
-                        style: TextStyle(
-                          color: Color(0xFF55735D),
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Care guidance for $disease',
-                        style: const TextStyle(
-                          color: Color(0xFF25422E),
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                const ComingSoonBadge(),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Care guidance is in development. No treatment recommendations are available at this time.',
-              style: TextStyle(
-                color: Color(0xFF68766B),
-                fontSize: 12,
-                height: 1.4,
-              ),
-            ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ComingSoonBadge extends StatelessWidget {
-  const ComingSoonBadge({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF1F3EB),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: const Text(
-        'COMING SOON',
-        style: TextStyle(
-          color: Color(0xFF72806F),
-          fontSize: 9,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.5,
         ),
       ),
     );

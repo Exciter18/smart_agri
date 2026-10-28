@@ -131,13 +131,29 @@ Dùng để kiểm thử agent khi chưa có file model:
 
 ## Chạy Flutter
 
-Android Emulator dùng địa chỉ mặc định `http://10.0.2.2:8000/predict`:
+Android Emulator truy cập backend trên máy chủ qua `10.0.2.2`:
 
 ```powershell
 cd app\mobile
 flutter pub get
-flutter run
+flutter run --dart-define=SMART_AGRI_API_URL=http://10.0.2.2:8000/predict
 ```
+
+### Demo trên điện thoại Android qua USB
+
+Giữ Ollama và backend đang chạy trên máy tính. Bật USB debugging, cắm điện
+thoại, rồi từ thư mục gốc repo chạy:
+
+```powershell
+adb reverse tcp:8000 tcp:8000
+cd app\mobile
+flutter run -d <device-id> --dart-define=SMART_AGRI_API_URL=http://127.0.0.1:8000/predict
+```
+
+Lấy `<device-id>` từ `flutter devices`. Cấu hình cho phép HTTP chỉ nằm trong
+Android debug manifest; bản release không bật cleartext traffic. Giữ cáp USB
+và cửa sổ backend trong suốt buổi demo. Không cần PostgreSQL cho luồng demo cơ
+bản: agent dùng kiến thức JSON và SQLite cục bộ.
 
 Điện thoại thật phải dùng IP LAN của máy chạy backend (điện thoại và máy tính
 cùng mạng Wi-Fi):
