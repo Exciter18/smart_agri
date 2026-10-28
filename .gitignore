@@ -5,6 +5,7 @@ __pycache__/
 venv/
 env/
 .env
+*.sqlite3
 
 # Local datasets and generated feature caches
 classification_dataset/

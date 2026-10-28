@@ -1,10 +1,15 @@
 fastapi
+beautifulsoup4
+httpx
 joblib
 matplotlib
 numpy
 opencv-python
 pandas
 Pillow
+psycopg[binary]
+pypdf
+python-dotenv
 python-multipart
 PyYAML
 scikit-learn

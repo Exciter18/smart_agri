@@ -1,0 +1,402 @@
+{
+  "schema_version": "1.0.0",
+  "scope_notice": "Thông tin chỉ hỗ trợ nhận diện và chăm sóc một mẫu cây lúa trong phạm vi các nhãn của model; không ước lượng tỷ lệ nhiễm toàn ruộng, năng suất hoặc thay thế chuyên gia nông nghiệp.",
+  "pesticide_notice": "Không tự pha hoặc sử dụng thuốc chỉ dựa trên kết quả ảnh. Chỉ dùng sản phẩm được đăng ký cho lúa và đúng sinh vật gây hại tại Việt Nam, đọc nhãn, tuân thủ thời gian cách ly và hỏi cán bộ bảo vệ thực vật khi chưa chắc chắn.",
+  "national_pesticide_lookup": "https://sansangxuatkhau.ppd.gov.vn/thuoc-va-phan-bon/phan-mem-tra-cuu-thuoc-bao-ve-thuc-vat-quoc-gia.html",
+  "classes": {
+    "Rice__BacterialLeafBlight": {
+      "display_name": "Bạc lá lúa",
+      "english_name": "Bacterial leaf blight",
+      "category": "bacterial_disease",
+      "cause": "Bệnh do vi khuẩn Xanthomonas oryzae pv. oryzae gây ra.",
+      "overview": "Bạc lá có thể làm cây con héo và làm lá ở cây lớn chuyển vàng rồi khô. Mưa lớn, gió mạnh, ẩm cao và bón thừa đạm làm nguy cơ bệnh tăng.",
+      "symptoms": [
+        "Cây con có thể héo, lá cuộn rồi chuyển vàng đến màu rơm.",
+        "Ở cây lớn, vết bệnh thường bắt đầu như sọc úng nước hoặc vàng cam từ chóp hay mép lá và lan về gốc lá.",
+        "Mép vết bệnh có thể gợn sóng; dịch vi khuẩn đôi khi tạo giọt đục trên vết bệnh non."
+      ],
+      "favorable_conditions": [
+        "Mưa lớn liên tục, gió mạnh và độ ẩm cao.",
+        "Nhiệt độ ấm và lá bị tổn thương cơ học.",
+        "Bón đạm quá mức hoặc dinh dưỡng mất cân đối."
+      ],
+      "management": [
+        "Tránh làm tổn thương lá và tách cây nghi bệnh khỏi các cây khỏe nếu đang trồng chậu hoặc thử nghiệm.",
+        "Giữ dụng cụ sạch; loại bỏ phần cây bệnh nặng theo cách không làm phát tán dịch cây.",
+        "Dùng giống chống chịu và vật liệu trồng sạch bệnh cho lần trồng sau.",
+        "Không tăng lượng đạm khi đang nghi bạc lá; ưu tiên dinh dưỡng cân đối."
+      ],
+      "watering": [
+        "Tránh để giá thể hoặc khu vực quanh gốc úng kéo dài; bảo đảm thoát nước tốt.",
+        "Không dùng nước chảy từ cây đang nghi bệnh để tưới cây khỏe.",
+        "Giữ ẩm vừa đủ cho cây, nhưng không suy ra lượng nước chính xác chỉ từ một ảnh."
+      ],
+      "fertilizer": [
+        "Tạm thời không bón thêm đạm/urê nếu vừa bón hoặc cây đang xanh đậm bất thường.",
+        "Chỉ điều chỉnh kali hay dinh dưỡng khác khi có thông tin đất, lịch bón hoặc hướng dẫn chuyên môn; không tự đặt liều từ ảnh."
+      ],
+      "prevention": [
+        "Sử dụng giống chống chịu và cây giống sạch.",
+        "Bón đạm cân đối, vệ sinh tàn dư và cỏ ký chủ.",
+        "Duy trì thoát nước và hạn chế làm rách lá trong thời tiết mưa ẩm."
+      ],
+      "lookalikes": ["Rice__LeafScald"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "water_condition", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "IRRI Rice Knowledge Bank - Bacterial blight",
+          "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Bacterial_blight.htm"
+        },
+        {
+          "title": "Sri Lanka Department of Agriculture - Bacterial Leaf Blight",
+          "url": "https://doa.gov.lk/rrdi_ricediseases_bacterialleafblight/"
+        }
+      ]
+    },
+    "Rice__BrownSpot": {
+      "display_name": "Đốm nâu",
+      "english_name": "Brown spot",
+      "category": "fungal_disease",
+      "cause": "Đây là bệnh nấm; nguồn bệnh có thể tồn tại trong hạt giống, tàn dư cây và cỏ ký chủ.",
+      "overview": "Đốm nâu thường liên quan đến lá ẩm kéo dài, đất thiếu dinh dưỡng hoặc cây bị stress nước. Bệnh có thể xuất hiện ở nhiều giai đoạn nhưng đáng chú ý từ đẻ nhánh đến chín.",
+      "symptoms": [
+        "Vết non thường nhỏ, tròn và nâu sẫm hoặc nâu tím.",
+        "Vết phát triển có thể tròn đến bầu dục, giữa nâu nhạt hoặc xám và có viền nâu đỏ.",
+        "Nhiễm nặng có thể làm lá héo; bệnh cũng có thể ảnh hưởng bẹ, nhánh bông và hạt."
+      ],
+      "favorable_conditions": [
+        "Độ ẩm cao và lá bị ướt kéo dài.",
+        "Đất không ngập nhưng thiếu nước, đất nghèo dinh dưỡng hoặc có độc chất.",
+        "Cây suy yếu do dinh dưỡng mất cân đối."
+      ],
+      "management": [
+        "Giữ cây ổn định, loại bỏ lá hư nặng nếu chỉ chăm sóc một cây và vệ sinh dụng cụ sau khi thao tác.",
+        "Kiểm tra nguyên nhân stress nước và dinh dưỡng thay vì chỉ xử lý phần lá.",
+        "Dùng hạt giống sạch, giống chống chịu và quản lý tàn dư cho vụ sau.",
+        "Nếu bệnh tiếp tục lan nhanh, mang mẫu hoặc ảnh rõ đến cán bộ chuyên môn trước khi chọn thuốc."
+      ],
+      "watering": [
+        "Không để cây khô hạn kéo dài vì stress nước có thể đi cùng nguy cơ đốm nâu.",
+        "Giữ ẩm vùng rễ ổn định, đồng thời tránh làm lá ướt kéo dài hoặc tưới lên lá vào cuối ngày.",
+        "Lượng tưới cụ thể cần dựa vào giá thể, chậu và điều kiện thực tế, không thể tính từ ảnh."
+      ],
+      "fertilizer": [
+        "Đốm nâu thường liên quan đến cây thiếu hoặc mất cân đối dinh dưỡng; cần xem lại lịch bón thay vì bổ sung ngẫu nhiên.",
+        "Không tự tăng mạnh đạm. Nếu có thể, kiểm tra đất hoặc hỏi cán bộ địa phương để cân đối N-P-K và silic."
+      ],
+      "prevention": [
+        "Dùng hạt giống sạch và giống chống chịu.",
+        "Giữ dinh dưỡng, nước và vệ sinh tàn dư ổn định.",
+        "Hạn chế thời gian lá ướt kéo dài."
+      ],
+      "lookalikes": ["Rice__LeafBlast", "Rice__NarrowBrownLeafSpot"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "water_condition", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "IRRI Rice Knowledge Bank - Brown spot",
+          "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Brown_spot.htm"
+        }
+      ]
+    },
+    "Rice__Healthy": {
+      "display_name": "Cây lúa khỏe mạnh",
+      "english_name": "Healthy rice",
+      "category": "healthy",
+      "cause": "Model chưa phát hiện dấu hiệu thuộc tám nhóm bệnh hoặc sâu hại mà nó hỗ trợ.",
+      "overview": "Kết quả Healthy không chứng minh cây hoàn toàn không có vấn đề; nó chỉ cho biết ảnh không giống các lớp bệnh/sâu hại model đã học với mức tin cậy hiện tại.",
+      "symptoms": [
+        "Không có dấu hiệu điển hình của các lớp bệnh/sâu hại được model hỗ trợ trong vùng ảnh.",
+        "Màu sắc hoặc hình dạng bất thường ngoài phạm vi model vẫn có thể cần kiểm tra thêm."
+      ],
+      "favorable_conditions": [],
+      "management": [
+        "Tiếp tục theo dõi cây và giữ điều kiện chăm sóc ổn định.",
+        "Nếu cây vẫn vàng, héo, chậm phát triển hoặc xuất hiện dấu hiệu mới, chụp ảnh rõ hơn và xin ý kiến chuyên môn."
+      ],
+      "watering": [
+        "Tưới theo độ ẩm thực tế của đất hoặc giá thể, tránh cả khô kéo dài lẫn úng liên tục.",
+        "Không thể suy ra lịch hoặc lượng tưới chính xác chỉ từ ảnh lá."
+      ],
+      "fertilizer": [
+        "Không bón thêm phân chỉ vì model trả Healthy; cần dựa trên tuổi cây, biểu hiện thực tế và lịch bón."
+      ],
+      "prevention": [
+        "Theo dõi thay đổi theo thời gian, giữ dụng cụ sạch và chăm sóc cân đối."
+      ],
+      "lookalikes": [],
+      "required_context": [],
+      "sources": [
+        {
+          "title": "IRRI Rice Doctor - scope of diagnostic support",
+          "url": "https://education.irri.org/wp-content/uploads/2022/10/RD-v2.pdf"
+        }
+      ]
+    },
+    "Rice__Hispa": {
+      "display_name": "Bọ gai hại lúa",
+      "english_name": "Rice hispa",
+      "category": "insect_pest",
+      "cause": "Tổn thương do bọ gai lúa Dicladispa armigera; đây là côn trùng gây hại, không phải bệnh do nấm hay vi khuẩn.",
+      "overview": "Bọ trưởng thành cạo bề mặt lá, còn ấu trùng tạo đường hầm trong mô lá. Bón phân quá mức, tán lá dày, cỏ ký chủ và thời tiết mưa ẩm có thể thuận lợi cho dịch hại.",
+      "symptoms": [
+        "Vệt trắng dài song song với gân lá do bề mặt lá bị cạo.",
+        "Mảng trắng trong hoặc đường hầm trong mô lá do ấu trùng.",
+        "Lá bị nặng có thể trắng, khô và giảm sức sống."
+      ],
+      "favorable_conditions": [
+        "Tán lá hoặc mật độ cây dày.",
+        "Nhiều cỏ ký chủ và bón phân quá mức.",
+        "Mùa mưa, ẩm cao và điều kiện thuận lợi cho côn trùng phát triển."
+      ],
+      "management": [
+        "Với một cây mẫu, kiểm tra cả hai mặt lá và loại bỏ bọ hoặc lá bị hại nặng bằng tay nếu an toàn.",
+        "Cách ly cây mẫu khỏi cây khỏe trong quá trình theo dõi.",
+        "Tránh bón thừa đạm; giữ khu vực quanh cây sạch cỏ ký chủ.",
+        "Nếu côn trùng tiếp tục xuất hiện nhiều, nhờ cán bộ bảo vệ thực vật xác nhận trước khi chọn sản phẩm phòng trừ."
+      ],
+      "watering": [
+        "Không có lượng tưới đặc hiệu để trị bọ gai; duy trì ẩm phù hợp để cây phục hồi và tránh gây thêm stress.",
+        "Không dùng việc tăng hoặc giảm nước như biện pháp duy nhất để xử lý côn trùng."
+      ],
+      "fertilizer": [
+        "Tránh bón quá nhiều đạm vì sinh trưởng non rậm có thể thuận lợi cho bọ gai.",
+        "Chỉ tiếp tục bón theo lịch cân đối sau khi đã đánh giá tình trạng cây."
+      ],
+      "prevention": [
+        "Theo dõi mặt lá, vệ sinh cỏ ký chủ và tránh mật độ quá dày.",
+        "Khuyến khích thiên địch và hạn chế dùng thuốc phổ rộng không cần thiết."
+      ],
+      "lookalikes": [],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "nitrogen_use", "previous_action"],
+      "sources": [
+        {
+          "title": "IRRI Rice Knowledge Bank - Hispa",
+          "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Hispa.htm"
+        }
+      ]
+    },
+    "Rice__LeafBlast": {
+      "display_name": "Đạo ôn lá",
+      "english_name": "Leaf blast",
+      "category": "fungal_disease",
+      "cause": "Bệnh do nấm Magnaporthe oryzae gây ra và có thể ảnh hưởng nhiều bộ phận phía trên mặt đất của cây lúa.",
+      "overview": "Đạo ôn lá có thể xuất hiện ở nhiều giai đoạn. Mưa kéo dài, sương/ẩm lá, nhiệt độ mát, đất thiếu ẩm và bón thừa đạm có thể làm bệnh thuận lợi hơn.",
+      "symptoms": [
+        "Vết non có thể trắng đến xanh xám với viền xanh sẫm.",
+        "Vết phát triển thường dài hoặc hình thoi, giữa trắng xám và viền nâu đỏ.",
+        "Nhiều vết nhập lại có thể làm khô cả lá."
+      ],
+      "favorable_conditions": [
+        "Mưa rào thường xuyên, sương hoặc lá ướt kéo dài và nhiệt độ ban ngày mát.",
+        "Đất hoặc vùng rễ thiếu ẩm.",
+        "Bón thừa đạm hoặc bón đạm không chia lần."
+      ],
+      "management": [
+        "Tách cây mẫu nghi bệnh khỏi cây khỏe nếu có thể và vệ sinh dụng cụ sau khi xử lý.",
+        "Không bón thêm đạm khi đang nghi đạo ôn và xem lại lịch bón.",
+        "Giữ cây không bị stress nước; loại bỏ phần lá chết nặng nếu chỉ chăm sóc một cây mẫu.",
+        "Nếu bệnh lan nhanh hoặc xuất hiện ở cổ bông, cần xin ý kiến chuyên môn sớm."
+      ],
+      "watering": [
+        "Duy trì độ ẩm vùng rễ ổn định; tránh để cây khô hạn kéo dài.",
+        "Hạn chế làm ướt lá kéo dài, đặc biệt vào chiều tối, và bảo đảm thông thoáng.",
+        "Ảnh đơn lẻ không đủ để tính lượng nước cụ thể."
+      ],
+      "fertilizer": [
+        "Dừng việc bổ sung đạm tùy tiện; thừa đạm có thể làm đạo ôn nặng hơn.",
+        "Nếu cần bón tiếp, phải dựa trên giai đoạn cây và lịch bón cân đối thay vì kết quả ảnh đơn lẻ."
+      ],
+      "prevention": [
+        "Dùng giống chống chịu, tránh thừa đạm và duy trì nước ổn định.",
+        "Giảm thời gian lá ướt kéo dài và giữ khu vực trồng thông thoáng."
+      ],
+      "lookalikes": ["Rice__BrownSpot", "Rice__LeafScald"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "water_condition", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "IRRI Rice Knowledge Bank - Blast (Leaf and Collar)",
+          "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Blast_(Leaf_and_Collar).htm"
+        }
+      ]
+    },
+    "Rice__LeafScald": {
+      "display_name": "Cháy lá lúa",
+      "english_name": "Leaf scald",
+      "category": "fungal_disease",
+      "cause": "Bệnh do nấm Microdochium oryzae (còn được ghi nhận với tên Monographella albescens) và có thể truyền qua hạt giống.",
+      "overview": "Cháy lá thường rõ trên lá trưởng thành; vết có thể bắt đầu từ chóp hoặc mép lá rồi làm phần lá chuyển màu rơm và khô.",
+      "symptoms": [
+        "Vết bắt đầu từ chóp hoặc mép phiến lá.",
+        "Các dải màu nâu đỏ xen vùng màu vàng nâu có thể tạo dạng chữ V hoặc chevron.",
+        "Lá bị nặng khô và chuyển màu rơm; bệnh cũng có thể ảnh hưởng bông và hạt đang phát triển."
+      ],
+      "favorable_conditions": [
+        "Nguồn hạt giống nhiễm bệnh và tàn dư bệnh.",
+        "Tán lá ẩm kéo dài và dinh dưỡng không cân đối."
+      ],
+      "management": [
+        "Với một cây mẫu, loại bỏ phần lá khô nặng và vệ sinh dụng cụ sau khi thao tác.",
+        "Không bón urê vượt khuyến cáo; theo dõi xem triệu chứng có tiếp tục lan hay không.",
+        "Dùng hạt giống chứng nhận sạch bệnh và vệ sinh cỏ/tàn dư cho lần trồng sau."
+      ],
+      "watering": [
+        "Giữ ẩm vùng rễ ổn định nhưng tránh để lá ướt kéo dài và tránh đọng nước quanh gốc.",
+        "Không có cơ sở để tính lượng tưới chính xác chỉ từ ảnh bệnh."
+      ],
+      "fertilizer": [
+        "Chỉ bón urê theo khuyến cáo và giai đoạn cây; không tăng đạm để xử lý lá vàng/cháy khi chưa rõ nguyên nhân.",
+        "Ưu tiên đánh giá lại lịch bón và điều kiện giá thể."
+      ],
+      "prevention": [
+        "Dùng hạt giống sạch bệnh, quản lý cỏ và tàn dư.",
+        "Giữ dinh dưỡng cân đối và giảm thời gian lá ướt kéo dài."
+      ],
+      "lookalikes": ["Rice__BacterialLeafBlight", "Rice__LeafBlast"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "water_condition", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "Sri Lanka Department of Agriculture - Leaf scald",
+          "url": "https://doa.gov.lk/rrdi_ricediseases_leafscald/"
+        },
+        {
+          "title": "IRRI - Diagnosis of Common Diseases of Rice",
+          "url": "https://www.knowledgebank.irri.org/images/docs/diagnostic-of-common-diseases-of-rice.pdf"
+        }
+      ]
+    },
+    "Rice__LeafSmut": {
+      "display_name": "Than lá lúa",
+      "english_name": "Leaf smut",
+      "category": "fungal_disease",
+      "cause": "Bệnh do nấm Entyloma oryzae gây ra; bào tử có thể phát tán trong không khí và tồn tại trên tàn dư lá bệnh.",
+      "overview": "Than lá thường là bệnh nhẹ xuất hiện muộn. Các đốm đen hơi nổi xuất hiện trên lá; nhiễm nặng có thể làm đầu lá vàng, chết và chuyển xám.",
+      "symptoms": [
+        "Nhiều đốm đen nhỏ, hơi nổi và tách biệt trên hai mặt lá.",
+        "Đốm có thể vỡ khi ướt và giải phóng bào tử đen.",
+        "Nhiễm nặng có thể làm lá vàng và đầu lá chết."
+      ],
+      "favorable_conditions": [
+        "Thường xuất hiện ở giai đoạn muộn.",
+        "Bón đạm cao có thể làm bệnh thuận lợi hơn.",
+        "Tàn dư lá bệnh là nguồn tồn tại của nấm."
+      ],
+      "management": [
+        "Theo dõi trước khi can thiệp vì bệnh này thường gây ít thiệt hại.",
+        "Với một cây mẫu, có thể loại bỏ lá hỏng nặng và vệ sinh dụng cụ.",
+        "Không tự sử dụng thuốc khi chưa có xác nhận và chưa kiểm tra đăng ký cho lúa."
+      ],
+      "watering": [
+        "Không có chế độ tưới đặc hiệu để trị than lá; duy trì ẩm phù hợp và tránh làm lá ướt kéo dài.",
+        "Không tăng hoặc giảm nước cực đoan chỉ dựa trên kết quả ảnh."
+      ],
+      "fertilizer": [
+        "Tránh bón thừa đạm; không bón bổ sung chỉ vì thấy lá đổi màu."
+      ],
+      "prevention": [
+        "Vệ sinh tàn dư lá bệnh và duy trì dinh dưỡng cân đối.",
+        "Theo dõi thay đổi thay vì xử lý hóa học không cần thiết."
+      ],
+      "lookalikes": ["Rice__BrownSpot"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "LSU AgCenter - Leaf Smut of Rice",
+          "url": "https://www.lsuagcenter.com/NR/rdonlyres/41C7A6F2-E14A-4713-BFE1-724F8BE27509/75781/pub3115LeafSmutLOWRES.pdf"
+        },
+        {
+          "title": "IRRI Rice Diseases Online Resource - Contents",
+          "url": "https://rice-diseases.irri.org/contents"
+        }
+      ]
+    },
+    "Rice__NarrowBrownLeafSpot": {
+      "display_name": "Đốm nâu hẹp",
+      "english_name": "Narrow brown leaf spot",
+      "category": "fungal_disease",
+      "cause": "Bệnh do nấm Sphaerulina oryzina (còn được ghi nhận là Cercospora janseana) gây ra.",
+      "overview": "Đốm nâu hẹp thường rõ hơn khi lúa tiến gần giai đoạn trưởng thành. Dinh dưỡng mất cân đối, cỏ/tàn dư và điều kiện làm lá ướt kéo dài có thể làm bệnh thuận lợi.",
+      "symptoms": [
+        "Vết nâu sáng đến nâu sẫm, hẹp và chạy song song với gân lá.",
+        "Vết điển hình dài khoảng vài milimét và có thể nhập lại thành vùng hoại tử dài.",
+        "Trên bẹ lá có thể tạo dạng lưới nâu và vàng gọi là net blotch."
+      ],
+      "favorable_conditions": [
+        "Cây tiến gần trưởng thành và giống mẫn cảm.",
+        "Thời tiết ấm, mưa hoặc điều kiện làm lá ướt kéo dài.",
+        "Dinh dưỡng mất cân đối, đặc biệt khi cây thiếu kali."
+      ],
+      "management": [
+        "Loại bỏ lá hỏng nặng ở cây mẫu và vệ sinh dụng cụ.",
+        "Xem lại cân đối dinh dưỡng và tình trạng cỏ/tàn dư thay vì chỉ xử lý triệu chứng lá.",
+        "Dùng hạt giống sạch và tránh dùng tàn dư cây bệnh cho lần trồng sau."
+      ],
+      "watering": [
+        "Giữ ẩm vùng rễ ổn định và tránh tưới làm lá ướt kéo dài.",
+        "Không có đủ dữ liệu để tính lượng nước cụ thể từ một ảnh."
+      ],
+      "fertilizer": [
+        "Không bón đạm vượt khuyến cáo.",
+        "Cân đối kali có thể quan trọng, nhưng liều phải dựa trên đất và lịch bón chứ không suy ra từ ảnh."
+      ],
+      "prevention": [
+        "Dùng giống/hạt sạch, quản lý cỏ và tàn dư.",
+        "Duy trì dinh dưỡng cân đối, đặc biệt tránh thừa đạm và thiếu kali."
+      ],
+      "lookalikes": ["Rice__BrownSpot", "Rice__LeafScald"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "water_condition", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "Sri Lanka Department of Agriculture - Narrow brown leaf spot",
+          "url": "https://doa.gov.lk/rrdi_ricediseases_narrowbrownleafspot/"
+        },
+        {
+          "title": "IRRI - Diagnosis of Common Diseases of Rice",
+          "url": "https://www.knowledgebank.irri.org/images/docs/diagnostic-of-common-diseases-of-rice.pdf"
+        }
+      ]
+    },
+    "Rice__NeckBlast": {
+      "display_name": "Đạo ôn cổ bông",
+      "english_name": "Neck blast",
+      "category": "fungal_disease",
+      "cause": "Đạo ôn cổ bông do cùng tác nhân nấm Magnaporthe oryzae của bệnh đạo ôn gây ra, nhưng biểu hiện ở cổ bông hoặc đốt.",
+      "overview": "Đạo ôn cổ bông xảy ra ở giai đoạn làm đòng–trổ và có thể làm cổ bông chuyển nâu xám, gãy hoặc tạo bông trắng. Đây là nhãn cần được xử lý thận trọng vì ảnh lá đơn lẻ không đủ để xác nhận cổ bông.",
+      "symptoms": [
+        "Vết ở cổ bông hoặc đốt có màu nâu xám đến đen.",
+        "Cổ bông bị thắt có thể làm bông gục hoặc tạo bông trắng.",
+        "Nhiễm sớm có thể làm hạt không hình thành; nhiễm muộn làm chất lượng hạt kém."
+      ],
+      "favorable_conditions": [
+        "Thời tiết ẩm, mưa/sương kéo dài quanh giai đoạn làm đòng–trổ.",
+        "Bón thừa đạm hoặc cây bị stress nước.",
+        "Giống mẫn cảm với đạo ôn."
+      ],
+      "management": [
+        "Nếu cây chưa ở giai đoạn làm đòng hoặc trổ, xem kết quả này là chưa phù hợp và cần kiểm tra lại ảnh/model.",
+        "Nếu đúng giai đoạn, giữ cây không bị stress nước và không bón thêm đạm tùy tiện.",
+        "Xin ý kiến cán bộ bảo vệ thực vật sớm vì tổn thương cổ bông có thể ảnh hưởng trực tiếp đến hạt."
+      ],
+      "watering": [
+        "Giữ độ ẩm vùng rễ ổn định trong giai đoạn làm đòng–trổ; tránh để cây khô hạn đột ngột.",
+        "Tránh làm phần bông/lá ướt kéo dài khi tưới cây mẫu.",
+        "Không thể tính lượng nước chính xác từ ảnh."
+      ],
+      "fertilizer": [
+        "Tránh bón thừa đạm; việc bón bổ sung phải theo lịch và giai đoạn cây.",
+        "Không dùng phân bón như biện pháp chữa bệnh trực tiếp."
+      ],
+      "prevention": [
+        "Dùng giống chống chịu, chia lần bón đạm hợp lý và tránh stress nước.",
+        "Theo dõi sát ở giai đoạn làm đòng–trổ khi thời tiết ẩm."
+      ],
+      "lookalikes": ["Rice__LeafBlast"],
+      "required_context": ["age_days", "growth_stage", "recent_weather", "water_condition", "nitrogen_use"],
+      "sources": [
+        {
+          "title": "IRRI Rice Knowledge Bank - Blast (Node and Neck)",
+          "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Blast_(Node_and_Neck).htm"
+        }
+      ]
+    }
+  }
+}

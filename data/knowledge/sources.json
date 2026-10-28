@@ -1,0 +1,133 @@
+{
+  "policy": "Chỉ nạp tài liệu từ cơ quan nghiên cứu, trường đại học hoặc cơ quan nhà nước; câu trả lời phải tóm tắt và giữ URL nguồn.",
+  "sources": [
+    {
+      "class_id": "Rice__BacterialLeafBlight",
+      "topic": "disease_management",
+      "title": "IRRI Rice Knowledge Bank - Bacterial blight",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Bacterial_blight.htm"
+    },
+    {
+      "class_id": "Rice__BacterialLeafBlight",
+      "topic": "disease_management",
+      "title": "Rice Research and Development Institute - Bacterial Leaf Blight",
+      "publisher": "Sri Lanka Department of Agriculture",
+      "language": "en",
+      "url": "https://doa.gov.lk/rrdi_ricediseases_bacterialleafblight/"
+    },
+    {
+      "class_id": "Rice__BrownSpot",
+      "topic": "disease_management",
+      "title": "IRRI Rice Knowledge Bank - Brown spot",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Brown_spot.htm"
+    },
+    {
+      "class_id": "Rice__Hispa",
+      "topic": "pest_management",
+      "title": "IRRI Rice Knowledge Bank - Rice hispa",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Hispa.htm"
+    },
+    {
+      "class_id": "Rice__LeafBlast",
+      "topic": "disease_management",
+      "title": "IRRI Rice Knowledge Bank - Blast (Leaf and Collar)",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Blast_(Leaf_and_Collar).htm"
+    },
+    {
+      "class_id": "Rice__NeckBlast",
+      "topic": "disease_management",
+      "title": "IRRI Rice Knowledge Bank - Blast (Node and Neck)",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://keyserver.lucidcentral.org/key-server/data/0e090d01-0209-460e-810c-0d060708030c/media/Html/Blast_(Node_and_Neck).htm"
+    },
+    {
+      "class_id": "Rice__LeafScald",
+      "topic": "disease_management",
+      "title": "Rice Research and Development Institute - Leaf scald",
+      "publisher": "Sri Lanka Department of Agriculture",
+      "language": "en",
+      "url": "https://doa.gov.lk/rrdi_ricediseases_leafscald/"
+    },
+    {
+      "class_id": "Rice__LeafSmut",
+      "topic": "disease_management",
+      "title": "LSU AgCenter - Leaf Smut of Rice",
+      "publisher": "Louisiana State University AgCenter",
+      "language": "en",
+      "url": "https://www.lsuagcenter.com/NR/rdonlyres/41C7A6F2-E14A-4713-BFE1-724F8BE27509/75781/pub3115LeafSmutLOWRES.pdf"
+    },
+    {
+      "class_id": "Rice__NarrowBrownLeafSpot",
+      "topic": "disease_management",
+      "title": "Rice Research and Development Institute - Narrow brown leaf spot",
+      "publisher": "Sri Lanka Department of Agriculture",
+      "language": "en",
+      "url": "https://doa.gov.lk/rrdi_ricediseases_narrowbrownleafspot/"
+    },
+    {
+      "class_id": "Rice__NarrowBrownLeafSpot",
+      "topic": "disease_diagnosis",
+      "title": "IRRI - Diagnosis of Common Diseases of Rice",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://www.knowledgebank.irri.org/images/docs/diagnostic-of-common-diseases-of-rice.pdf"
+    },
+    {
+      "class_id": "general",
+      "topic": "diagnosis",
+      "title": "IRRI Rice Doctor - diagnostic support",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://education.irri.org/wp-content/uploads/2022/10/RD-v2.pdf"
+    },
+    {
+      "class_id": "general",
+      "topic": "integrated_pest_management",
+      "title": "FAO - Integrated Pest Management in Rice",
+      "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+      "language": "en",
+      "url": "https://www.fao.org/4/Y6159T/y6159t02.htm"
+    },
+    {
+      "class_id": "general",
+      "topic": "integrated_crop_management",
+      "title": "FAO - Integrated Crop Management",
+      "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+      "language": "en",
+      "url": "https://www.fao.org/4/ac346e/ac346e00.htm"
+    },
+    {
+      "class_id": "general",
+      "topic": "water_management",
+      "title": "FAO - Sustainable Rice Systems",
+      "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+      "language": "en",
+      "url": "https://www.fao.org/agriculture/crops/thematic-sitemap/theme/spi/scpi-home/managing-ecosystems/sustainable-rice-systems/rice-how/en/"
+    },
+    {
+      "class_id": "general",
+      "topic": "crop_management",
+      "title": "FAO - Sustainable Rice Production",
+      "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+      "language": "en",
+      "url": "https://www.fao.org/fileadmin/templates/agphome/documents/Rice/sustintriceprod.pdf"
+    },
+    {
+      "class_id": "general",
+      "topic": "nutrient_management",
+      "title": "IRRI - Rice Crop Manager and site-specific nutrient management",
+      "publisher": "International Rice Research Institute (IRRI)",
+      "language": "en",
+      "url": "https://webapps.irri.org/id/rcm/"
+    }
+  ]
+}

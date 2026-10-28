@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: smart-agri-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smart_agri}
+      POSTGRES_USER: ${POSTGRES_USER:-smart_agri}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - smart_agri_postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  smart_agri_postgres_data:
