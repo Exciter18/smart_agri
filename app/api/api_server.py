@@ -1,4 +1,3 @@
-"""FastAPI service joining the rice vision model with the local RAG agent."""
 
 from __future__ import annotations
 
@@ -60,7 +59,6 @@ class AgentResetRequest(BaseModel):
 
 
 def square_padding(image: Image.Image) -> Image.Image:
-    """Match the deployed vision pipeline without stretching the input image."""
 
     width, height = image.size
     size = max(width, height)
@@ -70,7 +68,6 @@ def square_padding(image: Image.Image) -> Image.Image:
 
 
 class VisionRuntime:
-    """Load the large vision artifacts lazily when prediction is first used."""
 
     def __init__(self, project_root: Path) -> None:
         self.project_root = project_root
@@ -139,7 +136,7 @@ class VisionRuntime:
                 weights = torch.load(
                     paths["resnet"], map_location=self.device, weights_only=True
                 )
-            except TypeError:  # PyTorch cũ chưa hỗ trợ weights_only.
+            except TypeError:
                 weights = torch.load(paths["resnet"], map_location=self.device)
             backbone.load_state_dict(weights)
             backbone = nn.Sequential(*(list(backbone.children())[:-1]))
@@ -341,7 +338,6 @@ async def predict_disease(
             initial_context,
         )
     except LLMUnavailableError as exc:
-        # Không làm mất kết quả model ảnh nếu Ollama đang tắt.
         agent_result = None
         agent_error = str(exc)
     except ValueError as exc:
