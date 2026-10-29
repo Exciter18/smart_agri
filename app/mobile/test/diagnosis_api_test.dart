@@ -65,6 +65,66 @@ void main() {
     expect(result.agent?.sources.single.title, 'IRRI Rice Knowledge Bank');
   });
 
+  test('sends farm context as JSON with the image upload', () async {
+    final api = DiagnosisApi(
+      endpoint: endpoint,
+      client: MockClient((request) async {
+        expect(request.body, contains('name="farm_context"'));
+        expect(request.body, contains('"age_days":35'));
+        expect(request.body, contains('"growth_stage":"tillering"'));
+        return http.Response(
+          jsonEncode({'disease': 'Leaf Blast', 'confidence': 92.5}),
+          200,
+        );
+      }),
+    );
+
+    await api.analyzeImage(
+      sampleImage,
+      farmContext: const {'age_days': 35, 'growth_stage': 'tillering'},
+    );
+  });
+
+  test('uses the ngrok host for prediction and agent chat', () async {
+    final api = DiagnosisApi(
+      endpoint: Uri.parse('https://rice-demo.ngrok-free.app/predict'),
+      client: MockClient((request) async {
+        expect(request.url.host, 'rice-demo.ngrok-free.app');
+        expect(request.headers['ngrok-skip-browser-warning'], 'true');
+        if (request.url.path == '/predict') {
+          expect(request.body, contains('name="file"'));
+          return http.Response(
+            jsonEncode({
+              'disease': 'Leaf Blast',
+              'confidence': 92.5,
+              'agent': {
+                'session_id': 'session-1',
+                'message': 'Check the field conditions.',
+              },
+            }),
+            200,
+          );
+        }
+        expect(request.url.path, '/agent/chat');
+        return http.Response(
+          jsonEncode({
+            'session_id': 'session-1',
+            'message': 'I will use the same API host.',
+          }),
+          200,
+        );
+      }),
+    );
+
+    final diagnosis = await api.analyzeImage(sampleImage);
+    final reply = await api.sendAgentMessage(
+      sessionId: diagnosis.agent!.sessionId,
+      message: 'What next?',
+    );
+
+    expect(reply.message, 'I will use the same API host.');
+  });
+
   test('sends a follow-up question to the assistant endpoint', () async {
     final api = DiagnosisApi(
       endpoint: endpoint,

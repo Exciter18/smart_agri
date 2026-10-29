@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:path/path.dart' as path;
@@ -10,7 +11,7 @@ class AppDatabase {
   AppDatabase({this.databasePath});
 
   static const _databaseName = 'smart_agri.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
   final String? databasePath;
 
   Database? _database;
@@ -32,7 +33,12 @@ class AppDatabase {
             name TEXT NOT NULL DEFAULT '',
             rice_variety TEXT NOT NULL DEFAULT '',
             growth_stage TEXT NOT NULL DEFAULT '',
-            area REAL
+            area REAL,
+            age_days INTEGER,
+            recent_weather TEXT NOT NULL DEFAULT '',
+            water_condition TEXT NOT NULL DEFAULT '',
+            nitrogen_use TEXT NOT NULL DEFAULT '',
+            previous_action TEXT NOT NULL DEFAULT ''
           )
         ''');
         await database.insert('farms', const {'id': 1});
@@ -44,12 +50,33 @@ class AppDatabase {
             confidence REAL NOT NULL CHECK (confidence >= 0 AND confidence <= 100),
             created_at TEXT NOT NULL,
             image BLOB NOT NULL,
+            farm_context TEXT NOT NULL DEFAULT '{}',
             FOREIGN KEY (farm_id) REFERENCES farms(id) ON DELETE CASCADE
           )
         ''');
         await database.execute(
           'CREATE INDEX diagnoses_created_at_idx ON diagnoses(created_at DESC)',
         );
+      },
+      onUpgrade: (database, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await database.execute('ALTER TABLE farms ADD COLUMN age_days INTEGER');
+          await database.execute(
+            "ALTER TABLE farms ADD COLUMN recent_weather TEXT NOT NULL DEFAULT ''",
+          );
+          await database.execute(
+            "ALTER TABLE farms ADD COLUMN water_condition TEXT NOT NULL DEFAULT ''",
+          );
+          await database.execute(
+            "ALTER TABLE farms ADD COLUMN nitrogen_use TEXT NOT NULL DEFAULT ''",
+          );
+          await database.execute(
+            "ALTER TABLE farms ADD COLUMN previous_action TEXT NOT NULL DEFAULT ''",
+          );
+          await database.execute(
+            "ALTER TABLE diagnoses ADD COLUMN farm_context TEXT NOT NULL DEFAULT '{}'",
+          );
+        }
       },
     );
     return _database!;
@@ -64,6 +91,11 @@ class AppDatabase {
       riceVariety: row['rice_variety']! as String,
       growthStage: row['growth_stage']! as String,
       areaHa: (row['area'] as num?)?.toDouble(),
+      ageDays: (row['age_days'] as num?)?.toInt(),
+      recentWeather: row['recent_weather']! as String,
+      waterCondition: row['water_condition']! as String,
+      nitrogenUse: row['nitrogen_use']! as String,
+      previousAction: row['previous_action']! as String,
     );
   }
 
@@ -74,6 +106,11 @@ class AppDatabase {
       'rice_variety': profile.riceVariety,
       'growth_stage': profile.growthStage,
       'area': profile.areaHa,
+      'age_days': profile.ageDays,
+      'recent_weather': profile.recentWeather,
+      'water_condition': profile.waterCondition,
+      'nitrogen_use': profile.nitrogenUse,
+      'previous_action': profile.previousAction,
     };
     final updated = await database.update(
       'farms',
@@ -91,6 +128,7 @@ class AppDatabase {
     required double confidence,
     required DateTime createdAt,
     required Uint8List imageBytes,
+    Map<String, Object> farmContext = const {},
   }) async {
     final database = await _db;
     return database.insert('diagnoses', {
@@ -99,6 +137,7 @@ class AppDatabase {
       'confidence': confidence,
       'created_at': createdAt.toUtc().toIso8601String(),
       'image': imageBytes,
+      'farm_context': jsonEncode(farmContext),
     });
   }
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -11,7 +12,7 @@ import joblib
 import numpy as np
 import torch
 import torch.nn as nn
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, Response
 from PIL import Image, UnidentifiedImageError
@@ -46,6 +47,7 @@ class AgentStartRequest(BaseModel):
     top_predictions: list[dict[str, Any]] = Field(default_factory=list)
     model_version: str | None = None
     image_quality: dict[str, Any] = Field(default_factory=dict)
+    initial_context: dict[str, Any] = Field(default_factory=dict)
 
 
 class AgentChatRequest(BaseModel):
@@ -266,7 +268,20 @@ def agent_model_info() -> dict[str, Any]:
 
 
 @app.post("/predict")
-async def predict_disease(file: UploadFile = File(...)) -> dict[str, Any]:
+async def predict_disease(
+    file: UploadFile = File(...),
+    farm_context: str | None = Form(default=None),
+) -> dict[str, Any]:
+    try:
+        initial_context = json.loads(farm_context) if farm_context else {}
+        if not isinstance(initial_context, dict):
+            raise ValueError("Farm context must be a JSON object")
+        rice_agent.validate_initial_context(initial_context)
+    except (json.JSONDecodeError, ValueError) as exc:
+        raise HTTPException(
+            status_code=422, detail="Thông tin hồ sơ ruộng không hợp lệ."
+        ) from exc
+
     image_data = await file.read(MAX_UPLOAD_BYTES + 1)
     if not image_data:
         raise HTTPException(status_code=400, detail="Tệp ảnh rỗng")
@@ -323,11 +338,14 @@ async def predict_disease(file: UploadFile = File(...)) -> dict[str, Any]:
             top_predictions[:3],
             MODEL_VERSION,
             image_quality,
+            initial_context,
         )
     except LLMUnavailableError as exc:
         # Không làm mất kết quả model ảnh nếu Ollama đang tắt.
         agent_result = None
         agent_error = str(exc)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
     return {
         "class_id": class_id,
@@ -355,6 +373,7 @@ def agent_start(request: AgentStartRequest) -> dict[str, Any]:
             top_predictions=request.top_predictions,
             model_version=request.model_version,
             image_quality=request.image_quality,
+            initial_context=request.initial_context,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -392,4 +411,4 @@ def agent_reset(request: AgentResetRequest) -> dict[str, Any]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app.api.api_server:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("app.api.api_server:app", host="127.0.0.1", port=8000, reload=False)

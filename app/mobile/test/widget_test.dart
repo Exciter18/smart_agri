@@ -34,7 +34,14 @@ void main() {
 
     expect(find.text('Welcome to Smart Agri'), findsOneWidget);
     expect(find.text('Crop disease analysis'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Irrigation planning'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Irrigation planning'), findsOneWidget);
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, 800));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Crop disease analysis'));
     await tester.pumpAndSettle();
@@ -79,6 +86,62 @@ void main() {
 
     expect(find.text('Analysis history'), findsOneWidget);
     expect(find.text('No saved analyses'), findsOneWidget);
+  });
+
+  testWidgets('farm profile dropdowns fit on a narrow phone screen', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await pumpApp(tester);
+    await tester.tap(find.text('My Farm'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Recent fertilizer'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Recent fertilizer'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Recently applied a lot of nitrogen/urea'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'irrigation planning is visibly disabled without a coming soon label',
+    (tester) async {
+      await pumpApp(tester);
+
+      await tester.scrollUntilVisible(
+        find.text('Irrigation planning'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Explore'), findsOneWidget);
+      expect(find.text('Coming soon'), findsNothing);
+      expect(find.text('Irrigation planning'), findsOneWidget);
+      expect(find.text('Start analysis'), findsOneWidget);
+    },
+  );
+
+  testWidgets('does not expose backend configuration on the home screen', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({
+      'diagnosis_api_endpoint': 'http://192.168.1.25:8000/predict',
+    });
+    await pumpApp(tester);
+
+    final preferences = await SharedPreferences.getInstance();
+    expect(find.text('Analysis server'), findsNothing);
+    expect(find.text('API URL'), findsNothing);
+    expect(preferences.getString('diagnosis_api_endpoint'), isNull);
   });
 
   testWidgets('shows and deletes saved diagnosis history', (tester) async {
@@ -134,6 +197,7 @@ class _FakeAppDatabase extends AppDatabase {
     required double confidence,
     required DateTime createdAt,
     required Uint8List imageBytes,
+    Map<String, Object> farmContext = const {},
   }) async {
     final id = _nextId++;
     _diagnoses.add(
@@ -143,6 +207,7 @@ class _FakeAppDatabase extends AppDatabase {
         confidence: confidence,
         createdAt: createdAt,
         imageBytes: imageBytes,
+        farmContext: farmContext,
       ),
     );
     return id;

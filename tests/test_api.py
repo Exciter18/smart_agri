@@ -1,4 +1,5 @@
 import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -121,11 +122,41 @@ class ApiTests(unittest.TestCase):
                         "application/octet-stream",
                     )
                 },
+                data={
+                    "farm_context": json.dumps(
+                        {
+                            "age_days": 42,
+                            "growth_stage": "tillering",
+                            "recent_weather": "normal",
+                            "water_condition": "adequate",
+                            "nitrogen_use": "balanced",
+                        }
+                    )
+                },
             )
 
         self.assertEqual(200, response.status_code, response.text)
         self.assertEqual("Rice__LeafBlast", response.json()["class_id"])
         self.assertIsNotNone(response.json()["agent"])
+        self.assertEqual(42, response.json()["agent"]["context"]["age_days"])
+        self.assertEqual("đẻ nhánh", response.json()["agent"]["context"]["growth_stage"])
+        self.assertIsNone(response.json()["agent"]["pending_field"])
+        self.assertIsNone(response.json()["agent"]["next_question"])
+
+    def test_predict_rejects_invalid_farm_context_before_model_inference(self):
+        image = Image.new("RGB", (300, 300), "green")
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG")
+
+        with patch.object(api_server.vision_runtime, "predict") as predict:
+            response = self.client.post(
+                "/predict",
+                files={"file": ("leaf.jpg", buffer.getvalue(), "image/jpeg")},
+                data={"farm_context": json.dumps({"age_days": 300})},
+            )
+
+        self.assertEqual(422, response.status_code)
+        predict.assert_not_called()
 
     def test_predict_rejects_non_image_bytes(self):
         response = self.client.post(

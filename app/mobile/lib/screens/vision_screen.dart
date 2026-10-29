@@ -6,23 +6,23 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:image_picker/image_picker.dart';
 
 import '../data/app_database.dart';
+import '../models/farm_profile.dart';
 import '../services/diagnosis_api.dart';
 import '../widgets/app_widgets.dart';
-
-const _diagnosisApiUrl = String.fromEnvironment(
-  'SMART_AGRI_API_URL',
-  defaultValue: 'https://jamison-noncollusive-tomasa.ngrok-free.dev/predict',
-);
-final _diagnosisApi = DiagnosisApi(endpoint: Uri.parse(_diagnosisApiUrl));
+import 'diagnosis_result_screen.dart';
 
 class VisionScreen extends StatefulWidget {
   const VisionScreen({
     required this.database,
+    required this.farmProfile,
+    required this.apiEndpoint,
     required this.onDiagnosisSaved,
     super.key,
   });
 
   final AppDatabase database;
+  final FarmProfile farmProfile;
+  final Uri apiEndpoint;
   final Future<void> Function() onDiagnosisSaved;
 
   @override
@@ -30,21 +30,17 @@ class VisionScreen extends StatefulWidget {
 }
 
 class _VisionScreenState extends State<VisionScreen> {
+  late final DiagnosisApi _diagnosisApi;
   File? _image;
   Uint8List? _imageBytes;
   bool _isLoading = false;
-  bool _isAgentLoading = false;
-  Map<String, dynamic>? _predictionResult;
-  AgentReply? _agentReply;
-  String? _agentError;
   String? _errorMessage;
   final ImagePicker _picker = ImagePicker();
-  final TextEditingController _questionController = TextEditingController();
 
   @override
-  void dispose() {
-    _questionController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _diagnosisApi = DiagnosisApi(endpoint: widget.apiEndpoint);
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -60,10 +56,6 @@ class _VisionScreenState extends State<VisionScreen> {
       setState(() {
         _image = File(pickedFile.path);
         _imageBytes = bytes;
-        _predictionResult = null;
-        _agentReply = null;
-        _agentError = null;
-        _questionController.clear();
         _errorMessage = null;
       });
     } on PlatformException catch (error) {
@@ -91,36 +83,44 @@ class _VisionScreenState extends State<VisionScreen> {
     }
 
     setState(() => _isLoading = true);
+    final farmContext = widget.farmProfile.agentContext;
     try {
-      final result = await _diagnosisApi.analyzeImage(_imageBytes!);
+      final result = await _diagnosisApi.analyzeImage(
+        _imageBytes!,
+        farmContext: farmContext,
+      );
       if (!mounted) return;
       final createdAt = DateTime.now();
-      setState(() {
-        _predictionResult = {
-          'disease': result.disease,
-          'confidence': result.confidence,
-        };
-        _agentReply = result.agent;
-        _agentError = result.agentError;
-        _errorMessage = null;
-      });
-
+      String? saveError;
       try {
         await widget.database.saveDiagnosis(
           disease: result.disease,
           confidence: result.confidence,
           createdAt: createdAt,
           imageBytes: _imageBytes!,
+          farmContext: farmContext,
         );
         await widget.onDiagnosisSaved();
       } catch (error, stackTrace) {
         debugPrint('Failed to save diagnosis: $error\n$stackTrace');
-        if (!mounted) return;
-        setState(() {
-          _errorMessage =
-              'Analysis is complete, but it could not be saved to history.';
-        });
+        saveError =
+            'Analysis is complete, but it could not be saved to history.';
       }
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = null;
+        _isLoading = false;
+      });
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => DiagnosisResultScreen(
+            diagnosis: result,
+            imageBytes: _imageBytes!,
+            api: _diagnosisApi,
+            saveError: saveError,
+          ),
+        ),
+      );
     } on DiagnosisApiException catch (error) {
       if (!mounted) return;
       setState(() => _errorMessage = error.message);
@@ -133,96 +133,6 @@ class _VisionScreenState extends State<VisionScreen> {
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
-  }
-
-  Future<void> _sendAgentQuestion() async {
-    final currentReply = _agentReply;
-    final question = _questionController.text.trim();
-    if (currentReply == null || question.isEmpty || _isAgentLoading) return;
-
-    setState(() {
-      _isAgentLoading = true;
-      _agentError = null;
-    });
-    try {
-      final reply = await _diagnosisApi.sendAgentMessage(
-        sessionId: currentReply.sessionId,
-        message: question,
-      );
-      if (!mounted) return;
-      setState(() {
-        _agentReply = reply;
-        _questionController.clear();
-      });
-    } on DiagnosisApiException catch (error) {
-      if (!mounted) return;
-      setState(() => _agentError = error.message);
-    } finally {
-      if (mounted) setState(() => _isAgentLoading = false);
-    }
-  }
-
-  Widget _buildAgentPanel() {
-    final reply = _agentReply;
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFDDE7DF)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Rice care assistant',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
-          ),
-          if (reply != null) ...[
-            const SizedBox(height: 12),
-            Text(reply.message),
-            if (reply.sources.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              const Text(
-                'Sources',
-                style: TextStyle(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 4),
-              for (final source in reply.sources)
-                SelectableText('${source.title}: ${source.url}'),
-            ],
-            const SizedBox(height: 16),
-            TextField(
-              controller: _questionController,
-              minLines: 1,
-              maxLines: 3,
-              textInputAction: TextInputAction.send,
-              onSubmitted: (_) => _sendAgentQuestion(),
-              decoration: const InputDecoration(
-                labelText: 'Ask about treatment, watering, or fertilizer',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 10),
-            FilledButton.icon(
-              onPressed: _isAgentLoading ? null : _sendAgentQuestion,
-              icon: _isAgentLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.send_rounded),
-              label: Text(_isAgentLoading ? 'Sending...' : 'Send question'),
-            ),
-          ],
-          if (_agentError != null) ...[
-            const SizedBox(height: 12),
-            Text(_agentError!, style: const TextStyle(color: Colors.redAccent)),
-          ],
-        ],
-      ),
-    );
   }
 
   @override
@@ -282,14 +192,6 @@ class _VisionScreenState extends State<VisionScreen> {
                   if (_errorMessage != null) ...[
                     const SizedBox(height: 16),
                     ErrorCard(message: _errorMessage!),
-                  ],
-                  if (_predictionResult != null) ...[
-                    const SizedBox(height: 20),
-                    PredictionCard(result: _predictionResult!),
-                    if (_agentReply != null || _agentError != null) ...[
-                      const SizedBox(height: 16),
-                      _buildAgentPanel(),
-                    ],
                   ],
                   const SizedBox(height: 20),
                   const InfoBanner(

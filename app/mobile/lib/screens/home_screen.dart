@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                   _FarmSummaryCard(profile: farmProfile, onTap: onEditFarm),
                   const SizedBox(height: 24),
                   Text(
-                    'Available services',
+                    'Explore',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: const Color(0xFF193D29),
                       fontWeight: FontWeight.w800,
@@ -53,7 +53,6 @@ class HomeScreen extends StatelessWidget {
                     title: 'Irrigation planning',
                     description:
                         'Planning tools based on field and environmental data.',
-                    actionLabel: 'Coming soon',
                   ),
                   const SizedBox(height: 20),
                   const InfoBanner(
@@ -139,14 +138,14 @@ class _ActionCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.description,
-    required this.actionLabel,
+    this.actionLabel,
     this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String description;
-  final String actionLabel;
+  final String? actionLabel;
   final VoidCallback? onTap;
 
   @override
@@ -154,54 +153,59 @@ class _ActionCard extends StatelessWidget {
     final enabled = onTap != null;
 
     return Card(
+      color: enabled ? null : const Color(0xFFF0F2EF),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(24),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Row(
-            children: [
-              IconTile(icon: icon, size: 52),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Color(0xFF25422E),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
+        child: Opacity(
+          opacity: enabled ? 1 : 0.5,
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Row(
+              children: [
+                IconTile(icon: icon, size: 52),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          color: Color(0xFF25422E),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        color: Color(0xFF718075),
-                        fontSize: 13,
-                        height: 1.4,
+                      const SizedBox(height: 5),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          color: Color(0xFF718075),
+                          fontSize: 13,
+                          height: 1.4,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      actionLabel,
-                      style: TextStyle(
-                        color: enabled
-                            ? const Color(0xFF245C3A)
-                            : const Color(0xFF788276),
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ],
+                      if (actionLabel != null) ...[
+                        const SizedBox(height: 12),
+                        Text(
+                          actionLabel!,
+                          style: const TextStyle(
+                            color: Color(0xFF245C3A),
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                enabled ? Icons.arrow_forward_rounded : Icons.schedule_rounded,
-                color: const Color(0xFF55735D),
-              ),
-            ],
+                if (enabled)
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Color(0xFF55735D),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -9,6 +9,11 @@ import 'screens/history_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/vision_screen.dart';
 
+const _defaultDiagnosisApiUrl = String.fromEnvironment(
+  'SMART_AGRI_API_URL',
+  defaultValue: 'https://jamison-noncollusive-tomasa.ngrok-free.dev/predict',
+);
+
 class MainNavigator extends StatefulWidget {
   const MainNavigator({required this.database, super.key});
 
@@ -24,6 +29,7 @@ class _MainNavigatorState extends State<MainNavigator> {
   List<DiagnosisRecord> _diagnoses = const [];
   bool _isInitializing = true;
   String? _storageError;
+  final String _apiEndpoint = _defaultDiagnosisApiUrl;
 
   @override
   void initState() {
@@ -35,6 +41,7 @@ class _MainNavigatorState extends State<MainNavigator> {
     try {
       var profile = await widget.database.getFarmProfile();
       final preferences = await SharedPreferences.getInstance();
+      await preferences.remove('diagnosis_api_endpoint');
       final storedProfile = preferences.getString('farm_profile');
       if (storedProfile != null) {
         profile = FarmProfile.fromJson(storedProfile);
@@ -141,6 +148,8 @@ class _MainNavigatorState extends State<MainNavigator> {
             MaterialPageRoute<void>(
               builder: (_) => VisionScreen(
                 database: widget.database,
+                farmProfile: _farmProfile,
+                apiEndpoint: Uri.parse(_apiEndpoint),
                 onDiagnosisSaved: _refreshDiagnoses,
               ),
             ),

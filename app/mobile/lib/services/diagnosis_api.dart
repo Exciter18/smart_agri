@@ -56,7 +56,14 @@ class DiagnosisApi {
 
   static const _requestTimeout = Duration(seconds: 120);
 
-  Future<DiagnosisResult> analyzeImage(Uint8List imageBytes) async {
+  Map<String, String> get _ngrokHeaders => endpoint.host.contains('ngrok')
+      ? const {'ngrok-skip-browser-warning': 'true'}
+      : const {};
+
+  Future<DiagnosisResult> analyzeImage(
+    Uint8List imageBytes, {
+    Map<String, Object> farmContext = const {},
+  }) async {
     if (imageBytes.isEmpty) {
       throw const DiagnosisApiException('Choose a valid image and try again.');
     }
@@ -69,10 +76,11 @@ class DiagnosisApi {
           filename: 'upload.jpg',
         ),
       );
-
-    if (endpoint.host.endsWith('ngrok-free.dev')) {
-      request.headers['ngrok-skip-browser-warning'] = 'true';
+    if (farmContext.isNotEmpty) {
+      request.fields['farm_context'] = jsonEncode(farmContext);
     }
+
+    request.headers.addAll(_ngrokHeaders);
 
     try {
       final streamedResponse = await _client
@@ -144,7 +152,10 @@ class DiagnosisApi {
       final response = await _client
           .post(
             endpoint.resolve('/agent/chat'),
-            headers: const {'Content-Type': 'application/json; charset=utf-8'},
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              ..._ngrokHeaders,
+            },
             body: jsonEncode({
               'session_id': sessionId,
               'message': cleanedMessage,
