@@ -541,7 +541,21 @@ class RiceDiseaseAgent:
     @staticmethod
     def _looks_like_context_answer(message: str) -> bool:
         plain = _plain_text(message)
-        question_words = ("tai sao", "la gi", "the nao", "bao nhieu", "co nen", "cach")
+        question_words = (
+            "tai sao",
+            "la gi",
+            "the nao",
+            "bao nhieu",
+            "co nen",
+            "cach",
+            "why",
+            "what",
+            "how",
+            "when",
+            "where",
+            "should i",
+            "can i",
+        )
         return not any(word in plain for word in question_words) and len(message) <= 240
 
     def _extract_context(self, message: str) -> dict[str, Any]:
@@ -551,6 +565,8 @@ class RiceDiseaseAgent:
         age_patterns = (
             r"(?:cay|lua|gieo|sa|cay duoc)\D{0,18}(\d{1,3})\s*ngay",
             r"(\d{1,3})\s*ngay\s*(?:tuoi|sau gieo|sau sa|sau cay)",
+            r"(?:rice|crop|seeded|transplanted|planted)\D{0,18}(\d{1,3})\s*days?",
+            r"(\d{1,3})\s*days?\s*(?:old|after seeding|after transplanting|after planting)?",
         )
         for pattern in age_patterns:
             match = re.search(pattern, plain)
@@ -572,25 +588,79 @@ class RiceDiseaseAgent:
             "tro bong": "trổ",
             "tro": "trổ",
             "chin": "chín",
+            "seedling": "seedling",
+            "tillering": "tillering",
+            "panicle initiation": "panicle initiation",
+            "heading": "heading",
+            "ripening": "ripening",
         }
         for keyword, value in stages.items():
             if keyword in plain:
                 result["growth_stage"] = value
                 break
 
-        weather_words = ("mua", "am cao", "suong", "kho han", "nang gat", "gio manh")
+        weather_words = (
+            "mua",
+            "am cao",
+            "suong",
+            "kho han",
+            "nang gat",
+            "gio manh",
+            "rain",
+            "humid",
+            "dew",
+            "dry",
+            "hot",
+        )
         if any(word in plain for word in weather_words):
             result["recent_weather"] = message
 
-        water_words = ("ngap", "u nuoc", "dong nuoc", "kho", "nut dat", "du am", "am vua")
+        water_words = (
+            "ngap",
+            "u nuoc",
+            "dong nuoc",
+            "kho",
+            "nut dat",
+            "du am",
+            "am vua",
+            "waterlogged",
+            "flooded",
+            "moist",
+            "dry",
+            "water",
+            "irrigat",
+        )
         if any(word in plain for word in water_words):
             result["water_condition"] = message
 
-        nitrogen_words = ("ure", "phan dam", "bon dam", "npk", "bon phan")
+        nitrogen_words = (
+            "ure",
+            "phan dam",
+            "bon dam",
+            "npk",
+            "bon phan",
+            "nitrogen",
+            "fertiliz",
+            "fertilis",
+            "urea",
+        )
         if any(word in plain for word in nitrogen_words):
             result["nitrogen_use"] = message
 
-        action_words = ("da phun", "vua phun", "da xu ly", "cat bo", "thuoc", "che pham")
+        action_words = (
+            "da phun",
+            "vua phun",
+            "da xu ly",
+            "cat bo",
+            "thuoc",
+            "che pham",
+            "spray",
+            "treat",
+            "remove",
+            "applied",
+            "fertilized",
+            "fertilised",
+        )
         if any(word in plain for word in action_words):
             result["previous_action"] = message
         return result
@@ -627,7 +697,9 @@ class RiceDiseaseAgent:
             )
         if state.get("class_id") == "Rice__NeckBlast":
             stage = _plain_text(str(context.get("growth_stage", "")))
-            if stage and any(value in stage for value in ("ma", "de nhanh")):
+            if stage and any(
+                value in stage for value in ("ma", "de nhanh", "seedling", "tillering")
+            ):
                 notes.append(
                     "Note: neck blast is not consistent with the seedling/tillering stage. "
                     "Treat this result cautiously and recheck the image and disease label."

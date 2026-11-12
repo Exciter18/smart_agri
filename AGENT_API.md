@@ -12,6 +12,9 @@ Agent có hai tầng kiến thức:
 - JSON đã kiểm duyệt luôn có sẵn để hệ thống không bị ngừng khi database lỗi.
 - PostgreSQL + pgvector lưu các đoạn tài liệu và embedding để tìm theo ý nghĩa
   câu hỏi. Nếu `DATABASE_URL` chưa được cấu hình, agent tự dùng tầng JSON.
+Agent Rice Care trả lời bằng tiếng Anh; phần kiến thức tiếng Việt trong nguồn
+được dùng làm căn cứ và chuyển thành câu trả lời tiếng Anh. Kết quả nhận diện
+vẫn trả về tên nhãn tiếng Việt cho màn hình tiếng Việt của ứng dụng.
 
 ## Phạm vi
 
@@ -177,6 +180,8 @@ Snapshot context đã gửi cũng được lưu cùng lịch sử chẩn đoán 
 Kết quả gồm `class_id`, tên tiếng Việt,
 `confidence_score`, ba dự đoán cao nhất, đánh giá chất lượng ảnh và trường
 `agent`. Lưu `agent.session_id` để tiếp tục trò chuyện.
+Agent trả lời tiếng Anh, và các câu hỏi tiếp theo có thể được gửi bằng tiếng
+Anh hoặc tiếng Việt.
 Trong `agent.generation` có tên model, chế độ `openai_api` hoặc `local_llm`, độ trễ, số token và
 tốc độ sinh để phục vụ đánh giá thực nghiệm trong báo cáo.
 

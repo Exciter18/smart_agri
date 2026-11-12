@@ -208,6 +208,18 @@ class RiceDiseaseAgentTests(unittest.TestCase):
         self.assertIn("nitrogen_use", reply["context"])
         self.assertEqual("water_condition", reply["pending_field"])
 
+    def test_context_is_extracted_from_english_follow_up(self):
+        started = self.agent.start_diagnosis("Rice__LeafBlast", confidence=0.75)
+
+        reply = self.agent.chat(
+            started["session_id"],
+            "The rice is 40 days old and is tillering. It has been rainy and humid.",
+        )
+
+        self.assertEqual(40, reply["context"]["age_days"])
+        self.assertEqual("tillering", reply["context"]["growth_stage"])
+        self.assertIn("recent_weather", reply["context"])
+
     def test_age_can_supply_a_clearly_marked_stage_estimate(self):
         started = self.agent.start_diagnosis("Rice__BrownSpot", confidence=0.75)
         reply = self.agent.chat(started["session_id"], "Lúa gieo được 62 ngày")
@@ -275,7 +287,7 @@ class RiceDiseaseAgentTests(unittest.TestCase):
 
         self.assertNotIn("The model classified", reply["message"])
         self.assertNotIn("Rice blast", reply["message"])
-        self.assertIn("Remove infected plant material", reply["message"])
+        self.assertIn("remove infected plant material", reply["message"].lower())
         self.assertIn(
             "do not repeat the disease label",
             self.agent.llm.calls[-1]["system_prompt"],
